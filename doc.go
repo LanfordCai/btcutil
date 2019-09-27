@@ -1,46 +1,29 @@
-// Copyright (c) 2013-2014 The btcsuite developers
+// Copyright (c) 2014 The btcsuite developers
 // Use of this source code is governed by an ISC
 // license that can be found in the LICENSE file.
 
 /*
-Package btcutil provides bitcoin-specific convenience functions and types.
+Package base58 provides an API for working with modified base58 and Base58Check
+encodings.
 
-Block Overview
+Modified Base58 Encoding
 
-A Block defines a bitcoin block that provides easier and more efficient
-manipulation of raw wire protocol blocks.  It also memoizes hashes for the
-block and its transactions on their first access so subsequent accesses don't
-have to repeat the relatively expensive hashing operations.
+Standard base58 encoding is similar to standard base64 encoding except, as the
+name implies, it uses a 58 character alphabet which results in an alphanumeric
+string and allows some characters which are problematic for humans to be
+excluded.  Due to this, there can be various base58 alphabets.
 
-Tx Overview
+The modified base58 alphabet used by Bitcoin, and hence this package, omits the
+0, O, I, and l characters that look the same in many fonts and are therefore
+hard to humans to distinguish.
 
-A Tx defines a bitcoin transaction that provides more efficient manipulation of
-raw wire protocol transactions.  It memoizes the hash for the transaction on its
-first access so subsequent accesses don't have to repeat the relatively
-expensive hashing operations.
+Base58Check Encoding Scheme
 
-Address Overview
-
-The Address interface provides an abstraction for a Bitcoin address.  While the
-most common type is a pay-to-pubkey-hash, Bitcoin already supports others and
-may well support more in the future.  This package currently provides
-implementations for the pay-to-pubkey, pay-to-pubkey-hash, and
-pay-to-script-hash address types.
-
-To decode/encode an address:
-
-	// NOTE: The default network is only used for address types which do not
-	// already contain that information.  At this time, that is only
-	// pay-to-pubkey addresses.
-	addrString := "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962" +
-		"e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d57" +
-		"8a4c702b6bf11d5f"
-	defaultNet := &chaincfg.MainNetParams
-	addr, err := btcutil.DecodeAddress(addrString, defaultNet)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(addr.EncodeAddress())
+The Base58Check encoding scheme is primarily used for Bitcoin addresses at the
+time of this writing, however it can be used to generically encode arbitrary
+byte arrays into human-readable strings along with a version byte that can be
+used to differentiate the same payload.  For Bitcoin addresses, the extra
+version is used to differentiate the network of otherwise identical public keys
+which helps prevent using an address intended for one network on another.
 */
-package btcutil
+package rbase58

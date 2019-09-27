@@ -2,12 +2,12 @@
 // Use of this source code is governed by an ISC
 // license that can be found in the LICENSE file.
 
-package base58_test
+package rbase58_test
 
 import (
 	"testing"
 
-	"github.com/LanfordCai/btcutil/base58"
+	"github.com/LanfordCai/rbase58"
 )
 
 var checkEncodingStringTests = []struct {
@@ -31,12 +31,12 @@ var checkEncodingStringTests = []struct {
 func TestBase58Check(t *testing.T) {
 	for x, test := range checkEncodingStringTests {
 		// test encoding
-		if res := base58.CheckEncode([]byte(test.in), test.version); res != test.out {
+		if res := rbase58.CheckEncode([]byte(test.in), test.version); res != test.out {
 			t.Errorf("CheckEncode test #%d failed: got %s, want: %s", x, res, test.out)
 		}
 
 		// test decoding
-		res, version, err := base58.CheckDecode(test.out)
+		res, version, err := rbase58.CheckDecode(test.out)
 		if err != nil {
 			t.Errorf("CheckDecode test #%d failed with err: %v", x, err)
 		} else if version != test.version {
@@ -48,8 +48,8 @@ func TestBase58Check(t *testing.T) {
 
 	// test the two decoding failure cases
 	// case 1: checksum error
-	_, _, err := base58.CheckDecode("3MNQE1Y")
-	if err != base58.ErrChecksum {
+	_, _, err := rbase58.CheckDecode("3MNQE1Y")
+	if err != rbase58.ErrChecksum {
 		t.Error("Checkdecode test failed, expected ErrChecksum")
 	}
 	// case 2: invalid formats (string lengths below 5 mean the version byte and/or the checksum
@@ -57,8 +57,8 @@ func TestBase58Check(t *testing.T) {
 	testString := ""
 	for len := 0; len < 4; len++ {
 		// make a string of length `len`
-		_, _, err = base58.CheckDecode(testString)
-		if err != base58.ErrInvalidFormat {
+		_, _, err = rbase58.CheckDecode(testString)
+		if err != rbase58.ErrInvalidFormat {
 			t.Error("Checkdecode test failed, expected ErrInvalidFormat")
 		}
 	}

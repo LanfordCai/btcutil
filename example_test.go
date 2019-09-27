@@ -1,76 +1,71 @@
-package btcutil_test
+// Copyright (c) 2014 The btcsuite developers
+// Use of this source code is governed by an ISC
+// license that can be found in the LICENSE file.
+
+package rbase58_test
 
 import (
 	"fmt"
-	"math"
 
-	"github.com/btcsuite/btcutil"
+	"github.com/LanfordCai/rbase58"
 )
 
-func ExampleAmount() {
+// This example demonstrates how to decode modified base58 encoded data.
+func ExampleDecode() {
+	// Decode example modified base58 encoded data.
+	encoded := "pnJ8AS8fXKC4Q"
+	decoded := rbase58.Decode(encoded)
 
-	a := btcutil.Amount(0)
-	fmt.Println("Zero Satoshi:", a)
-
-	a = btcutil.Amount(1e8)
-	fmt.Println("100,000,000 Satoshis:", a)
-
-	a = btcutil.Amount(1e5)
-	fmt.Println("100,000 Satoshis:", a)
-	// Output:
-	// Zero Satoshi: 0 BTC
-	// 100,000,000 Satoshis: 1 BTC
-	// 100,000 Satoshis: 0.001 BTC
-}
-
-func ExampleNewAmount() {
-	amountOne, err := btcutil.NewAmount(1)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(amountOne) //Output 1
-
-	amountFraction, err := btcutil.NewAmount(0.01234567)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(amountFraction) //Output 2
-
-	amountZero, err := btcutil.NewAmount(0)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(amountZero) //Output 3
-
-	amountNaN, err := btcutil.NewAmount(math.NaN())
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(amountNaN) //Output 4
-
-	// Output: 1 BTC
-	// 0.01234567 BTC
-	// 0 BTC
-	// invalid bitcoin amount
-}
-
-func ExampleAmount_unitConversions() {
-	amount := btcutil.Amount(44433322211100)
-
-	fmt.Println("Satoshi to kBTC:", amount.Format(btcutil.AmountKiloBTC))
-	fmt.Println("Satoshi to BTC:", amount)
-	fmt.Println("Satoshi to MilliBTC:", amount.Format(btcutil.AmountMilliBTC))
-	fmt.Println("Satoshi to MicroBTC:", amount.Format(btcutil.AmountMicroBTC))
-	fmt.Println("Satoshi to Satoshi:", amount.Format(btcutil.AmountSatoshi))
+	// Show the decoded data.
+	fmt.Println("Decoded Data:", string(decoded))
 
 	// Output:
-	// Satoshi to kBTC: 444.333222111 kBTC
-	// Satoshi to BTC: 444333.222111 BTC
-	// Satoshi to MilliBTC: 444333222.111 mBTC
-	// Satoshi to MicroBTC: 444333222111 μBTC
-	// Satoshi to Satoshi: 44433322211100 Satoshi
+	// Decoded Data: Test data
+}
+
+// This example demonstrates how to encode data using the modified base58
+// encoding scheme.
+func ExampleEncode() {
+	// Encode example data with the modified base58 encoding scheme.
+	data := []byte("Test data")
+	encoded := rbase58.Encode(data)
+
+	// Show the encoded data.
+	fmt.Println("Encoded Data:", encoded)
+
+	// Output:
+	// Encoded Data: pnJ8AS8fXKC4Q
+}
+
+// This example demonstrates how to decode Base58Check encoded data.
+func ExampleCheckDecode() {
+	// Decode an example Base58Check encoded data.
+	encoded := "rwrzPrePnQGeC5pDMPTCTLnSLmvfD5vC42"
+	decoded, version, err := rbase58.CheckDecode(encoded)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// Show the decoded data.
+	fmt.Printf("Decoded data: %x\n", decoded)
+	fmt.Println("Version Byte:", version)
+
+	// Output:
+	// Decoded data: 62e907b15cbf27d5425399ebf6f0fb50ebb88f18
+	// Version Byte: 0
+}
+
+// This example demonstrates how to encode data using the Base58Check encoding
+// scheme.
+func ExampleCheckEncode() {
+	// Encode example data with the Base58Check encoding scheme.
+	data := []byte("Test data")
+	encoded := rbase58.CheckEncode(data, 0)
+
+	// Show the encoded data.
+	fmt.Println("Encoded Data:", encoded)
+
+	// Output:
+	// Encoded Data: r3p5Pf9GR7RMFfoMHD7
 }
